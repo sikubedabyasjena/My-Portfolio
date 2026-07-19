@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Siku Bedabyas Jena — Atmospheric Science Researcher</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #080b10;
+    --bg-panel: #0d1219;
+    --line: rgba(232,236,241,0.09);
+    --text: #e8ecf1;
+    --text-muted: #7c8797;
+    --teal: #5eead4;
+    --violet: #a78bfa;
+    --amber: #f0b86e;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--teal);color:#080b10;}
+
+  .mono{font-family:'JetBrains Mono',monospace;}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:24px 5vw;
+    backdrop-filter:blur(10px);
+    background:linear-gradient(to bottom, rgba(8,11,16,0.85), transparent);
+    transition:padding .3s ease;
+  }
+  .logo{font-family:'Fraunces',serif;font-size:1.1rem;letter-spacing:0.02em;font-weight:500;}
+  .logo span{color:var(--teal);}
+  .nav-links{display:flex;gap:2.4rem;list-style:none;}
+  .nav-links a{
+    color:var(--text-muted);text-decoration:none;font-size:0.78rem;
+    letter-spacing:0.12em;text-transform:uppercase;font-weight:500;
+    transition:color .25s ease;
+    position:relative;
+  }
+  .nav-links a:hover{color:var(--text);}
+  .nav-links a::after{
+    content:'';position:absolute;bottom:-6px;left:0;width:0;height:1px;
+    background:var(--teal);transition:width .3s ease;
+  }
+  .nav-links a:hover::after{width:100%;}
+  .nav-toggle{display:none;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    height:100vh;
+    min-height:640px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:0 5vw;
+    overflow:hidden;
+  }
+  #flowCanvas{
+    position:absolute;inset:0;width:100%;height:100%;
+    opacity:0.85;
+  }
+  .hero::after{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(ellipse at 50% 40%, transparent 0%, var(--bg) 88%);
+    pointer-events:none;
+  }
+  .hero-content{position:relative;z-index:2;max-width:1000px;}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;
+    color:var(--teal);margin-bottom:1.6rem;
+    display:flex;align-items:center;gap:10px;
+  }
+  .eyebrow::before{
+    content:'';width:28px;height:1px;background:var(--teal);
+  }
+  .hero h1{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:clamp(2.4rem, 6.2vw, 5.4rem);
+    line-height:1.02;
+    letter-spacing:-0.01em;
+    max-width:14ch;
+  }
+  .hero h1 em{
+    font-style:italic;font-weight:400;
+    color:var(--teal);
+  }
+  .hero-role{
+    margin-top:1.6rem;
+    font-size:clamp(0.95rem, 1.4vw, 1.15rem);
+    color:var(--text-muted);
+    max-width:46ch;
+    line-height:1.6;
+    font-weight:300;
+  }
+  .hero-tag{
+    margin-top:2.2rem;
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:clamp(1rem, 1.6vw, 1.3rem);
+    color:var(--text);
+    max-width:36ch;
+    line-height:1.5;
+    border-left:2px solid var(--violet);
+    padding-left:1.1rem;
+  }
+  .hero-cta{
+    margin-top:2.6rem;display:flex;gap:1rem;flex-wrap:wrap;
+  }
+  .btn{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.78rem;letter-spacing:0.08em;text-transform:uppercase;
+    padding:0.9rem 1.7rem;
+    border-radius:2px;
+    text-decoration:none;
+    transition:all .3s ease;
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  .btn-primary{
+    background:var(--teal);color:#06110f;font-weight:500;
+  }
+  .btn-primary:hover{background:#89f2df;transform:translateY(-2px);}
+  .btn-ghost{
+    border:1px solid var(--line);color:var(--text);
+  }
+  .btn-ghost:hover{border-color:var(--teal);color:var(--teal);}
+
+  .scroll-cue{
+    position:absolute;bottom:2.6rem;left:5vw;z-index:2;
+    display:flex;align-items:center;gap:10px;
+    color:var(--text-muted);font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .scroll-cue .line{width:1px;height:34px;background:linear-gradient(var(--teal), transparent);animation:pulse-line 2s infinite;}
+  @keyframes pulse-line{0%,100%{opacity:0.3;}50%{opacity:1;}}
+
+  /* ---------- SECTION SHELL ---------- */
+  section{
+    padding:9rem 5vw;
+    position:relative;
+  }
+  .section-head{
+    display:flex;justify-content:space-between;align-items:flex-end;
+    margin-bottom:4rem;
+    flex-wrap:wrap;gap:1.5rem;
+    border-bottom:1px solid var(--line);
+    padding-bottom:2rem;
+  }
+  .section-index{
+    font-family:'JetBrains Mono',monospace;color:var(--text-muted);
+    font-size:0.78rem;letter-spacing:0.12em;
+  }
+  .section-title{
+    font-family:'Fraunces',serif;font-weight:500;
+    font-size:clamp(1.8rem,3.4vw,2.8rem);
+    letter-spacing:-0.01em;
+  }
+  .section-title em{color:var(--teal);font-style:italic;font-weight:400;}
+
+  /* ---------- ABOUT ---------- */
+  .about-grid{
+    display:grid;grid-template-columns:1.1fr 0.9fr;gap:5rem;
+    align-items:start;
+  }
+  .about-text p{
+    font-size:1.08rem;line-height:1.85;color:#c3cad4;font-weight:300;
+    max-width:60ch;
+  }
+  .about-text p + p{margin-top:1.3rem;}
+  .field-tags{
+    display:flex;flex-wrap:wrap;gap:0.6rem;margin-top:2.2rem;
+  }
+  .field-tag{
+    font-family:'JetBrains Mono',monospace;font-size:0.72rem;
+    padding:0.5rem 0.9rem;border:1px solid var(--line);border-radius:20px;
+    color:var(--text-muted);letter-spacing:0.04em;
+  }
+  .stat-card{
+    background:var(--bg-panel);border:1px solid var(--line);
+    padding:1.8rem;border-radius:6px;margin-bottom:1rem;
+  }
+  .stat-card .num{
+    font-family:'Fraunces',serif;font-size:2.2rem;color:var(--teal);font-weight:500;
+  }
+  .stat-card .label{
+    font-size:0.82rem;color:var(--text-muted);margin-top:0.3rem;
+  }
+
+  /* ---------- PROJECTS ---------- */
+  .project-list{display:flex;flex-direction:column;}
+  .project-row{
+    display:grid;grid-template-columns:80px 1.3fr 1fr;gap:2.5rem;
+    align-items:start;
+    padding:2.6rem 0;
+    border-bottom:1px solid var(--line);
+    transition:background .3s ease;
+    cursor:default;
+  }
+  .project-row:hover{background:rgba(94,234,212,0.03);}
+  .project-num{font-family:'JetBrains Mono',monospace;color:var(--text-muted);font-size:0.85rem;padding-top:0.3rem;}
+  .project-name{
+    font-family:'Fraunces',serif;font-size:1.7rem;font-weight:500;margin-bottom:0.7rem;
+    transition:color .3s ease;
+  }
+  .project-row:hover .project-name{color:var(--teal);}
+  .project-desc{color:var(--text-muted);line-height:1.7;font-size:0.96rem;font-weight:300;max-width:52ch;}
+  .project-meta{display:flex;flex-direction:column;gap:0.9rem;align-items:flex-start;}
+  .tech-stack{display:flex;flex-wrap:wrap;gap:0.5rem;}
+  .tech-pill{
+    font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--violet);
+    border:1px solid rgba(167,139,250,0.3);padding:0.35rem 0.7rem;border-radius:20px;
+  }
+
+  /* ---------- SKILLS ---------- */
+  .skills-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:2.5rem;
+  }
+  .skill-group h4{
+    font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:0.12em;
+    text-transform:uppercase;color:var(--amber);margin-bottom:1.3rem;
+  }
+  .skill-group ul{list-style:none;}
+  .skill-group li{
+    font-size:0.95rem;color:#c3cad4;padding:0.5rem 0;
+    border-bottom:1px solid var(--line);font-weight:300;
+  }
+
+  /* ---------- SERVICES ---------- */
+  .services-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+    background:var(--line);border:1px solid var(--line);
+  }
+  .service-card{
+    background:var(--bg);padding:2.4rem;
+  }
+  .service-card .si{font-family:'JetBrains Mono',monospace;color:var(--teal);font-size:0.75rem;margin-bottom:1rem;}
+  .service-card h3{font-family:'Fraunces',serif;font-size:1.25rem;font-weight:500;margin-bottom:0.6rem;}
+  .service-card p{color:var(--text-muted);font-size:0.88rem;line-height:1.6;font-weight:300;}
+
+  /* ---------- TIMELINE (Education + Experience) ---------- */
+  .timeline{max-width:800px;}
+  .tl-item{
+    display:grid;grid-template-columns:140px 1fr;gap:2rem;
+    padding:2rem 0;border-bottom:1px solid var(--line);
+  }
+  .tl-period{font-family:'JetBrains Mono',monospace;color:var(--teal);font-size:0.8rem;}
+  .tl-role{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:500;margin-bottom:0.3rem;}
+  .tl-org{color:var(--text-muted);font-size:0.85rem;margin-bottom:0.7rem;letter-spacing:0.02em;}
+  .tl-desc{color:#c3cad4;font-size:0.92rem;line-height:1.7;font-weight:300;}
+
+  /* ---------- ACHIEVEMENTS ---------- */
+  .ach-list{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);}
+  .ach-item{background:var(--bg);padding:1.8rem 2.2rem;display:flex;align-items:center;gap:1.2rem;}
+  .ach-item .dot{width:7px;height:7px;border-radius:50%;background:var(--violet);flex-shrink:0;}
+  .ach-item p{font-size:0.95rem;color:#c3cad4;font-weight:300;}
+
+  /* ---------- CONTACT ---------- */
+  .contact-wrap{
+    display:grid;grid-template-columns:1.1fr 0.9fr;gap:4rem;align-items:end;
+  }
+  .contact-big{
+    font-family:'Fraunces',serif;font-weight:500;
+    font-size:clamp(2rem,5vw,3.6rem);line-height:1.08;
+  }
+  .contact-big a{color:var(--teal);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .3s ease;}
+  .contact-big a:hover{border-color:var(--teal);}
+  .contact-links{display:flex;flex-direction:column;gap:0.9rem;}
+  .contact-links a{
+    color:var(--text-muted);text-decoration:none;font-family:'JetBrains Mono',monospace;
+    font-size:0.85rem;display:flex;align-items:center;justify-content:space-between;
+    padding:1rem 0;border-bottom:1px solid var(--line);transition:color .3s ease;
+  }
+  .contact-links a:hover{color:var(--teal);}
+  .contact-links a .arrow{transition:transform .3s ease;}
+  .contact-links a:hover .arrow{transform:translateX(4px);}
+
+  footer{
+    padding:2.5rem 5vw;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:center;
+    color:var(--text-muted);font-size:0.75rem;font-family:'JetBrains Mono',monospace;
+    flex-wrap:wrap;gap:1rem;
+  }
+
+  /* ---------- REVEAL ---------- */
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .8s ease, transform .8s ease;}
+  .reveal.visible{opacity:1;transform:translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .reveal{opacity:1;transform:none;transition:none;}
+    #flowCanvas{display:none;}
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:900px){
+    .nav-links{position:fixed;top:0;right:0;height:100vh;width:min(78vw,320px);
+      background:#0a0e15;flex-direction:column;justify-content:center;
+      gap:2rem;padding:2rem;transform:translateX(100%);transition:transform .4s ease;
+      border-left:1px solid var(--line);
+    }
+    .nav-links.open{transform:translateX(0);}
+    .nav-toggle{display:block;background:none;border:none;color:var(--text);font-size:1.4rem;cursor:pointer;z-index:110;}
+    .about-grid,.contact-wrap{grid-template-columns:1fr;}
+    .skills-grid{grid-template-columns:repeat(2,1fr);}
+    .services-grid{grid-template-columns:1fr;}
+    .ach-list{grid-template-columns:1fr;}
+    .project-row{grid-template-columns:1fr;gap:0.8rem;}
+    section{padding:5.5rem 6vw;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">S<span>B</span>J</div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#journey">Journey</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle">☰</button>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <canvas id="flowCanvas"></canvas>
+  <div class="hero-content">
+    <div class="eyebrow">Rourkela, India — Atmospheric Science</div>
+    <h1>Siku Bedabyas <em>Jena</em></h1>
+    <p class="hero-role">Atmospheric Science Researcher · AI &amp; Climate Technology Enthusiast · Web Developer</p>
+    <p class="hero-tag">Exploring the future of climate science through artificial intelligence, data, and innovation.</p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn btn-primary">View Projects →</a>
+      <a href="#contact" class="btn btn-ghost">Get In Touch</a>
+    </div>
+  </div>
+  <div class="scroll-cue"><div class="line"></div>Scroll</div>
+</header>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-head reveal">
+    <div>
+      <div class="section-index">01 / About</div>
+      <h2 class="section-title">Where <em>data</em> meets the atmosphere</h2>
+    </div>
+  </div>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>I'm an M.Sc. Atmospheric Science student at NIT Rourkela with a strong interest in artificial intelligence, climate science, oceanography, and full-stack web development.</p>
+      <p>I enjoy building real-world projects that combine data science, machine learning, and modern web technologies to solve environmental challenges. My goal is to contribute to impactful research while creating innovative digital solutions.</p>
+      <div class="field-tags">
+        <span class="field-tag">Atmospheric Science</span>
+        <span class="field-tag">Machine Learning</span>
+        <span class="field-tag">Oceanography</span>
+        <span class="field-tag">Climate Data</span>
+        <span class="field-tag">Web Development</span>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="stat-card"><div class="num">M.Sc.</div><div class="label">Atmospheric Science, NIT Rourkela</div></div>
+      <div class="stat-card"><div class="num">IIT-BBS</div><div class="label">Summer Research Internship</div></div>
+      <div class="stat-card"><div class="num">02+</div><div class="label">Applied AI &amp; climate projects shipped</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-head reveal">
+    <div>
+      <div class="section-index">02 / Projects</div>
+      <h2 class="section-title">Selected <em>work</em></h2>
+    </div>
+  </div>
+  <div class="project-list">
+    <div class="project-row reveal">
+      <div class="project-num">01</div>
+      <div>
+        <div class="project-name">OceanGuard AI</div>
+        <p class="project-desc">An intelligent platform that uses artificial intelligence, satellite imagery, and environmental data to detect marine hazards and monitor ocean pollution in real time — helping researchers, environmental agencies, and coastal authorities identify risks early and act on informed decisions.</p>
+      </div>
+      <div class="project-meta">
+        <div class="tech-stack">
+          <span class="tech-pill">Python</span>
+          <span class="tech-pill">Machine Learning</span>
+          <span class="tech-pill">TensorFlow</span>
+          <span class="tech-pill">Streamlit</span>
+        </div>
+      </div>
+    </div>
+    <div class="project-row reveal">
+      <div class="project-num">02</div>
+      <div>
+        <div class="project-name">Personal Portfolio</div>
+        <p class="project-desc">A cinematic, modern portfolio site showcasing research, projects, and technical work — built from scratch with an atmospheric-flow visual identity.</p>
+      </div>
+      <div class="project-meta">
+        <div class="tech-stack">
+          <span class="tech-pill">HTML</span>
+          <span class="tech-pill">CSS</span>
+          <span class="tech-pill">JavaScript</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-head reveal">
+    <div>
+      <div class="section-index">03 / Skills</div>
+      <h2 class="section-title">Tools of the <em>trade</em></h2>
+    </div>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-group reveal">
+      <h4>Programming</h4>
+      <ul><li>Python</li><li>JavaScript</li><li>HTML5</li><li>CSS3</li></ul>
+    </div>
+    <div class="skill-group reveal">
+      <h4>AI &amp; Data Science</h4>
+      <ul><li>Machine Learning</li><li>Deep Learning</li><li>Data Analysis</li><li>TensorFlow</li><li>Scikit-learn</li></ul>
+    </div>
+    <div class="skill-group reveal">
+      <h4>Climate &amp; Research</h4>
+      <ul><li>Atmospheric Science</li><li>Oceanography</li><li>Climate Data Analysis</li><li>Marine Heatwaves</li><li>GIS</li><li>Remote Sensing</li></ul>
+    </div>
+    <div class="skill-group reveal">
+      <h4>Tools</h4>
+      <ul><li>Git &amp; GitHub</li><li>VS Code</li><li>Jupyter Notebook</li><li>Google Colab</li><li>Linux</li></ul>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-head reveal">
+    <div>
+      <div class="section-index">04 / Services</div>
+      <h2 class="section-title">How I can <em>help</em></h2>
+    </div>
+  </div>
+  <div class="services-grid reveal">
+    <div class="service-card"><div class="si">/ 01</div><h3>Climate Data Analysis</h3><p>Processing and interpreting large-scale climate and ocean datasets to surface actionable trends.</p></div>
+    <div class="service-card"><div class="si">/ 02</div><h3>Machine Learning Projects</h3><p>Building ML and deep learning models for environmental and scientific applications.</p></div>
+    <div class="service-card"><div class="si">/ 03</div><h3>Research Visualization</h3><p>Turning complex scientific data into clear, communicative visuals for research and reporting.</p></div>
+    <div class="service-card"><div class="si">/ 04</div><h3>Scientific Plotting</h3><p>Publication-ready plots and figures using Python's scientific computing stack.</p></div>
+    <div class="service-card"><div class="si">/ 05</div><h3>Front-End Web Development</h3><p>Designing and building modern, responsive websites and interfaces.</p></div>
+    <div class="service-card"><div class="si">/ 06</div><h3>AI-Based Environmental Solutions</h3><p>Combining AI and environmental data to build tools that support real-world decision-making.</p></div>
+  </div>
+</section>
+
+<!-- JOURNEY: Education + Experience -->
+<section id="journey">
+  <div class="section-head reveal">
+    <div>
+      <div class="section-index">05 / Journey</div>
+      <h2 class="section-title">Education &amp; <em>experience</em></h2>
+    </div>
+  </div>
+  <div class="timeline">
+    <div class="tl-item reveal">
+      <div class="tl-period mono">Ongoing</div>
+      <div>
+        <div class="tl-role">M.Sc. Atmospheric Science</div>
+        <div class="tl-org">National Institute of Technology Rourkela</div>
+      </div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-period mono">Prior</div>
+      <div>
+        <div class="tl-role">B.Sc. Geology</div>
+        <div class="tl-org">Stewart Science College</div>
+      </div>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-period mono">Internship</div>
+      <div>
+        <div class="tl-role">Summer Research Intern</div>
+        <div class="tl-org">IIT Bhubaneswar</div>
+        <p class="tl-desc">Worked on oceanographic data analysis, climate datasets, trend analysis, and scientific visualization using Python.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section id="achievements">
+  <div class="section-head reveal">
+    <div>
+      <div class="section-index">06 / Achievements</div>
+      <h2 class="section-title">Notes along the <em>way</em></h2>
+    </div>
+  </div>
+  <div class="ach-list reveal">
+    <div class="ach-item"><div class="dot"></div><p>Summer Research Intern at IIT Bhubaneswar</p></div>
+    <div class="ach-item"><div class="dot"></div><p>Rajya Puraskar — Bharat Scouts &amp; Guides</p></div>
+    <div class="ach-item"><div class="dot"></div><p>Yellow Belt in Karate</p></div>
+    <div class="ach-item"><div class="dot"></div><p>Participant, AI &amp; Hackathon competitions</p></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-head reveal">
+    <div>
+      <div class="section-index">07 / Contact</div>
+      <h2 class="section-title">Let's <em>connect</em></h2>
+    </div>
+  </div>
+  <div class="contact-wrap">
+    <div class="contact-big reveal">
+      Have a research idea, a project,<br> or just want to talk climate &amp; AI?<br>
+      <a href="mailto:sikubedabyasjena@gmail.com">Say hello →</a>
+    </div>
+    <div class="contact-links reveal">
+      <a href="mailto:sikubedabyasjena@gmail.com">Email <span class="arrow">↗</span></a>
+      <a href="https://github.com/sikubedabyasjena" target="_blank" rel="noopener">GitHub <span class="arrow">↗</span></a>
+      <a href="https://www.linkedin.com/in/siku-bedabyas-jena-2103072a2" target="_blank" rel="noopener">LinkedIn <span class="arrow">↗</span></a>
+      <a href="#" onclick="return false;">Portfolio — Coming Soon</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>© 2026 Siku Bedabyas Jena</div>
+  <div>Built with HTML, CSS &amp; JavaScript</div>
+</footer>
+
+<script>
+  // Mobile nav toggle
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, {threshold:0.15});
+  reveals.forEach(el => io.observe(el));
+
+  // ---------- Atmospheric flow-field canvas (hero signature) ----------
+  const canvas = document.getElementById('flowCanvas');
+  const ctx = canvas.getContext('2d');
+  let w, h, particles = [];
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function resize(){
+    w = canvas.width = canvas.offsetWidth * devicePixelRatio;
+    h = canvas.height = canvas.offsetHeight * devicePixelRatio;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function noise(x, y, t){
+    // simple layered sine-based flow field (no deps)
+    return Math.sin(x*0.0016 + t*0.0002) * Math.cos(y*0.0013 - t*0.00015)
+         + Math.sin((x+y)*0.0009 + t*0.0001) * 0.6;
+  }
+
+  function initParticles(){
+    particles = [];
+    const count = Math.min(220, Math.floor((w*h)/26000));
+    for(let i=0;i<count;i++){
+      particles.push({
+        x: Math.random()*w,
+        y: Math.random()*h,
+        life: Math.random()*200,
+        maxLife: 150 + Math.random()*250,
+        hueMix: Math.random()
+      });
+    }
+  }
+  initParticles();
+  window.addEventListener('resize', () => setTimeout(initParticles, 200));
+
+  const teal = [94,234,212];
+  const violet = [167,139,250];
+
+  function draw(t){
+    ctx.fillStyle = 'rgba(8,11,16,0.06)';
+    ctx.fillRect(0,0,w,h);
+
+    for(const p of particles){
+      const angle = noise(p.x, p.y, t) * Math.PI * 2;
+      const speed = 1.4 * devicePixelRatio;
+      const nx = p.x + Math.cos(angle)*speed;
+      const ny = p.y + Math.sin(angle)*speed*0.6;
+
+      const c = p.hueMix > 0.5 ? teal : violet;
+      const alpha = 0.16 * (1 - Math.abs((p.life/p.maxLife)-0.5)*2);
+      ctx.strokeStyle = `rgba(${c[0]},${c[1]},${c[2]},${Math.max(alpha,0)})`;
+      ctx.lineWidth = 1 * devicePixelRatio;
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(nx, ny);
+      ctx.stroke();
+
+      p.x = nx; p.y = ny; p.life++;
+
+      if(p.life > p.maxLife || p.x < 0 || p.x > w || p.y < 0 || p.y > h){
+        p.x = Math.random()*w; p.y = Math.random()*h; p.life = 0;
+      }
+    }
+    if(!reduceMotion) requestAnimationFrame(draw);
+  }
+
+  ctx.fillStyle = '#080b10';
+  ctx.fillRect(0,0,w,h);
+  if(!reduceMotion){
+    requestAnimationFrame(draw);
+  }
+</script>
+</body>
+</html>
